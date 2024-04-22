@@ -24,7 +24,11 @@ yarn add react-native-llm-mediapipe
 
 ## Requirements
 
-Before using this package, you must download or build the LLM model files necessary for its operation. Ensure these model files are properly configured and accessible by your mobile application. Some instructions can be found on [the MediaPipe page](https://developers.google.com/mediapipe/solutions/genai/llm_inference).
+Before using this package, you must download or build the LLM model files necessary for its operation. Ensure these model files are properly configured and accessible by your mobile application. Some instructions can be found on [the MediaPipe page](https://developers.google.com/mediapipe/solutions/genai/llm_inference). Or, see below for running a script that will download and convert the model files, automating the process
+
+## Building Models
+
+As of 4/22/2024, MediaPipe supports four models for use on-device: Gemma 2B, Falcon 1B, StableLM 3B, and Phi-2. To download and convert the models, follow the instructions above or clone this (react-native-llm-mediapipe) repo, and follow [the instructions here](https://github.com/cdiddy77/react-native-llm-mediapipe/blob/main/models/README.md).
 
 ## Usage
 
