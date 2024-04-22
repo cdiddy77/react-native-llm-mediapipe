@@ -1,28 +1,17 @@
 {
+  "extends": "./tsconfig.shared",
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-llm-mediapipe": ["./src/index"]
+      "react-native-llm-mediapipe": [
+        "./src/index"
+      ]
     },
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
-    "lib": ["esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noStrictGenericChecks": false,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext",
-    "verbatimModuleSyntax": true
-  }
+    "composite": true
+  },
+  "exclude": [
+    ".eslintrc.js",
+    "babel.config.js",
+    "react-native.config.js",
+  ]
 }

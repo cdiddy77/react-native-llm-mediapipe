@@ -37,7 +37,11 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "mediapipe",
+    "llm",
+    "LLM",
+    "Local LLM"
   ],
   "repository": {
     "type": "git",
