@@ -12,7 +12,15 @@
 
 @interface RCT_EXTERN_MODULE(LlmInferenceModule, RCTEventEmitter)
 
-RCT_EXTERN_METHOD(createModel:(nonnull NSString*)modelName
+RCT_EXTERN_METHOD(createModel:(nonnull NSString*)modelPath
+                  withMaxTokens:(NSInteger)maxTokens
+                  withTopK:(NSInteger)topK
+                  withTemperature:(nonnull NSNumber*)temperature
+                  withRandomSeed:(NSInteger)randomSeed
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(createModelFromAsset:(nonnull NSString*)modelName
                   withMaxTokens:(NSInteger)maxTokens
                   withTopK:(NSInteger)topK
                   withTemperature:(nonnull NSNumber*)temperature

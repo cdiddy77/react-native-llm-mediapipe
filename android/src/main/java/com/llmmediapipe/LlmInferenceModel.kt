@@ -8,7 +8,7 @@ import java.io.FileOutputStream
 
 class LlmInferenceModel(
         private var context: Context,
-        private val modelName: String,
+        private val modelPath: String,
         val maxTokens: Int,
         val topK: Int,
         val temperature: Float,
@@ -16,8 +16,6 @@ class LlmInferenceModel(
         val inferenceListener: InferenceListener? = null,
 ) {
     private var llmInference: LlmInference
-
-    private var modelPath: String? = null
 
     private val modelExists: Boolean
         get() = modelPath != null && File(modelPath).exists()
@@ -28,10 +26,6 @@ class LlmInferenceModel(
     private var requestPromise: Promise? = null
 
     init {
-        if (!modelExists) {
-            modelPath = copyFileToInternalStorageIfNeeded(context).path
-        }
-
         val options =
                 LlmInference.LlmInferenceOptions.builder()
                         .setModelPath(modelPath)
@@ -59,30 +53,6 @@ class LlmInferenceModel(
         this.requestResult = ""
         this.requestPromise = promise
         llmInference.generateResponseAsync(prompt)
-    }
-
-    private fun copyFileToInternalStorageIfNeeded(context: Context): File {
-        val outputFile = File(context.filesDir, this.modelName)
-
-        // Check if the file already exists
-        if (outputFile.exists()) {
-            // The file already exists, no need to copy again
-            return outputFile
-        }
-
-        val assetList =
-                context.assets.list(
-                        ""
-                ) // List all files in the assets root (""), adjust if your file is in a subfolder
-        if (this.modelName !in assetList.orEmpty()) {
-            throw IllegalArgumentException("Asset file ${this.modelName} does not exist.")
-        }
-        // File doesn't exist, proceed with copying
-        context.assets.open(this.modelName).use { inputStream ->
-            FileOutputStream(outputFile).use { outputStream -> inputStream.copyTo(outputStream) }
-        }
-
-        return outputFile
     }
 }
 

@@ -9,14 +9,7 @@ This README provides detailed instructions on how to build model files using a P
 
 ## Setup
 
-1. **Navigate to the Models Directory**:
-   Open your command line interface and navigate to the models directory where the model files and scripts are located.
-
-   ```bash
-   cd models
-   ```
-
-2. **Create and Activate a Python Virtual Environment**:
+1. **Create and Activate a Python Virtual Environment**:
    Create a new virtual environment in the models directory by running:
 
    ```bash
@@ -33,6 +26,13 @@ This README provides detailed instructions on how to build model files using a P
      ```bash
      source venv/bin/activate
      ```
+
+2. **Navigate to the Models Directory**:
+   Open your command line interface and navigate to the models directory where the model files and scripts are located.
+
+   ```bash
+   cd models
+   ```
 
 3. **Install Required Packages**:
    Ensure that the virtual environment is activated. Install all required Python packages using the requirements file provided:

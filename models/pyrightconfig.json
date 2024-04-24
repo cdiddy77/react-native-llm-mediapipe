@@ -1,0 +1,12 @@
+{
+  "typeCheckingMode": "basic",
+  "reportInvalidStringEscapeSequence": "none",
+  "include": [
+    "./build.py",
+  ],
+  "exclude": [
+    "node_modules",
+    "**/site-packages/**",
+    "**/venv/**"
+  ]
+}

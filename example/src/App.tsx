@@ -31,6 +31,7 @@ function App(): React.JSX.Element {
   const [partialResponse, setPartialResponse] = React.useState<Message>();
 
   const llmInference = useLlmInference({
+    storageType: 'asset',
     modelName: 'gemma-2b-it-cpu-int4.bin',
   });
 

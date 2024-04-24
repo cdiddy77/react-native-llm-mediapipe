@@ -17,9 +17,9 @@ import MediaPipeTasksGenAI
 import React
 
 protocol LlmInferenceModelDelegate: AnyObject {
-  func logging(_ model:LlmInferenceModel, message: String)
-  func onPartialResponse(_ model:LlmInferenceModel, requestId: Int, response: String)
-  func onErrorResponse(_ model:LlmInferenceModel, requestId: Int, error: String)
+  func logging(_ model: LlmInferenceModel, message: String)
+  func onPartialResponse(_ model: LlmInferenceModel, requestId: Int, response: String)
+  func onErrorResponse(_ model: LlmInferenceModel, requestId: Int, error: String)
 }
 
 final class LlmInferenceModel {
@@ -44,20 +44,12 @@ final class LlmInferenceModel {
 
   init(
     handle: Int,
-    modelName: String,
+    modelPath: String,
     maxTokens: Int,
     topK: Int,
     temperature: Float,
     randomSeed: Int
   ) throws {
-    let fileURL = URL(fileURLWithPath: modelName)
-
-    let basename = fileURL.deletingPathExtension().lastPathComponent
-    let fileExtension = fileURL.pathExtension
-    guard let modelPath = Bundle.main.path(forResource: basename, ofType: fileExtension) else {
-      throw NSError(
-        domain: "MODEL_NOT_FOUND", code: 0, userInfo: ["message": "Model \(modelName) not found"])
-    }
     self.handle = handle
     self.modelPath = modelPath
     self.maxTokens = maxTokens
@@ -78,7 +70,8 @@ final class LlmInferenceModel {
         inputText: prompt,
         progress: { partialResponse, error in
           if let error = error {
-            self.delegate?.onErrorResponse(self, requestId: requestId, error: "Error generating response: \(error)")
+            self.delegate?.onErrorResponse(
+              self, requestId: requestId, error: "Error generating response: \(error)")
             // should we reject or resolve?
             reject("GENERATE_RESPONSE_ERROR", "Error generating response: \(error)", error)
           } else if let partialResponse = partialResponse {
