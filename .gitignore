@@ -77,6 +77,16 @@ lib/
 # jest
 coverage/
 
-# model files
+# app model files
 example/ios/*.bin
 example/android/app/src/main/assets/*.bin
+
+# python
+venv
+
+# place to put non source-controlled files
+ungitable/
+
+# download/convert model files
+models/download/
+models/converted/
