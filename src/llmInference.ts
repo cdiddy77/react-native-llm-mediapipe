@@ -7,6 +7,13 @@ const eventEmitter = new NativeEventEmitter(LlmInferenceModule);
 
 interface LlmInference {
   createModel: (
+    modelPath: string,
+    maxTokens: number,
+    topK: number,
+    temperature: number,
+    randomSeed: number
+  ) => Promise<number>;
+  createModelFromAsset: (
     modelName: string,
     maxTokens: number,
     topK: number,
@@ -46,27 +53,46 @@ eventEmitter.addListener(
   }
 );
 
-export interface LlmInferenceConfig {
-  modelName: string;
+type LlmModelLocation =
+  | { storageType: 'asset'; modelName: string }
+  | { storageType: 'file'; modelPath: string };
+export type LlmInferenceConfig = LlmModelLocation & {
   maxTokens?: number;
   topK?: number;
   temperature?: number;
   randomSeed?: number;
+};
+
+function getConfigStorageKey(config: LlmInferenceConfig): string {
+  if (config.storageType === 'asset') {
+    return `${config.modelName}`;
+  }
+  return `${config.modelPath}`;
 }
 
 export function useLlmInference(config: LlmInferenceConfig) {
   const [modelHandle, setModelHandle] = React.useState<number | undefined>();
-
+  const configStorageKey = getConfigStorageKey(config);
   React.useEffect(() => {
     let newHandle: number | undefined;
-    getLlmInference()
-      .createModel(
-        config.modelName,
-        config.maxTokens ?? 512,
-        config.topK ?? 40,
-        config.temperature ?? 0.8,
-        config.randomSeed ?? 0
-      )
+    const modelCreatePromise =
+      config.storageType === 'asset'
+        ? getLlmInference().createModelFromAsset(
+            configStorageKey,
+            config.maxTokens ?? 512,
+            config.topK ?? 40,
+            config.temperature ?? 0.8,
+            config.randomSeed ?? 0
+          )
+        : getLlmInference().createModel(
+            configStorageKey,
+            config.maxTokens ?? 512,
+            config.topK ?? 40,
+            config.temperature ?? 0.8,
+            config.randomSeed ?? 0
+          );
+
+    modelCreatePromise
       .then((handle) => {
         console.log(`Created model with handle ${handle}`);
         setModelHandle(handle);
@@ -90,10 +116,11 @@ export function useLlmInference(config: LlmInferenceConfig) {
     };
   }, [
     config.maxTokens,
-    config.modelName,
+    config.storageType,
     config.randomSeed,
     config.temperature,
     config.topK,
+    configStorageKey,
   ]);
 
   const nextRequestIdRef = React.useRef(0);

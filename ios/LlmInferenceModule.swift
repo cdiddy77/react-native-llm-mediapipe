@@ -23,7 +23,7 @@ class LlmInferenceModule: RCTEventEmitter {
 
   @objc(createModel:withMaxTokens:withTopK:withTemperature:withRandomSeed:resolver:rejecter:)
   func createModel(
-    _ modelName: String,
+    _ modelPath: String,
     maxTokens: Int,
     topK: Int,
     temperature: NSNumber,
@@ -40,7 +40,52 @@ class LlmInferenceModule: RCTEventEmitter {
     do {
       let model = try LlmInferenceModel(
         handle: modelHandle,
-        modelName: modelName,
+        modelPath: modelPath,
+        maxTokens: maxTokens,
+        topK: topK,
+        temperature: temperature.floatValue,
+        randomSeed: randomSeed
+      )
+      model.delegate = self
+      modelMap[modelHandle] = model
+      resolve(modelHandle)
+    } catch let error as NSError {
+      // If an error is thrown, reject the promise
+      // You can customize the error code and message as needed
+      reject(error.domain, "An error occurred: \(error.localizedDescription)", error)
+    }
+  }
+
+  @objc(
+    createModelFromAsset:withMaxTokens:withTopK:withTemperature:withRandomSeed:resolver:rejecter:
+  )
+  func createModelFromAsset(
+    _ modelName: String,
+    maxTokens: Int,
+    topK: Int,
+    temperature: NSNumber,
+    randomSeed: Int,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+    os_log("createModel IS CALLED")
+    // Example implementation
+    // Pretend we're creating a model and assigning it an integer handle
+    let modelHandle = nextHandle
+    nextHandle += 1
+
+    do {
+      let fileURL = URL(fileURLWithPath: modelName)
+
+      let basename = fileURL.deletingPathExtension().lastPathComponent
+      let fileExtension = fileURL.pathExtension
+      guard let modelPath = Bundle.main.path(forResource: basename, ofType: fileExtension) else {
+        throw NSError(
+          domain: "MODEL_NOT_FOUND", code: 0, userInfo: ["message": "Model \(modelName) not found"])
+      }
+      let model = try LlmInferenceModel(
+        handle: modelHandle,
+        modelPath: modelPath,
         maxTokens: maxTokens,
         topK: topK,
         temperature: temperature.floatValue,
@@ -92,7 +137,7 @@ class LlmInferenceModule: RCTEventEmitter {
         reject: reject
       )
     } else {
-      reject( "INVALID_HANDLE", "No model found for handle \(handle)",nil)
+      reject("INVALID_HANDLE", "No model found for handle \(handle)", nil)
     }
   }
 
