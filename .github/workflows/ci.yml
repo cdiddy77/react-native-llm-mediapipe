@@ -99,7 +99,7 @@ jobs:
 
       - name: Build example for Android
         env:
-          JAVA_OPTS: "-XX:MaxHeapSize=6g"
+          JAVA_OPTS: '-XX:MaxHeapSize=6g'
         run: |
           yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}"
 
@@ -129,6 +129,11 @@ jobs:
           if [[ $TURBO_CACHE_STATUS == "HIT" ]]; then
             echo "turbo_cache_hit=1" >> $GITHUB_ENV
           fi
+
+      - name: Pretend there is a model file
+        run: |
+          cd example/ios
+          touch gemma-2b-it-cpu-int4.bin
 
       - name: Cache cocoapods
         if: env.turbo_cache_hit != 1
