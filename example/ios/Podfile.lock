@@ -947,7 +947,7 @@ PODS:
   - React-Mapbuffer (0.73.7):
     - glog
     - React-debug
-  - react-native-llm-mediapipe (0.1.1):
+  - react-native-llm-mediapipe (0.2.0):
     - glog
     - MediaPipeTasksGenAI
     - RCT-Folly (= 2022.05.16.00)
@@ -1359,7 +1359,7 @@ SPEC CHECKSUMS:
   React-jsinspector: f356e49aa086380d3a4892708ca173ad31ac69c1
   React-logger: 7b19bdfb254772a0332d6cd4d66eceb0678b6730
   React-Mapbuffer: 6f392912435adb8fbf4c3eee0e79a0a0b4e4b717
-  react-native-llm-mediapipe: f5fa87b4657bf0ac01700f60b49fcf8f899bec32
+  react-native-llm-mediapipe: a98f35b3298dbe4b1d050c4d65e153fabab0b146
   React-nativeconfig: 754233aac2a769578f828093b672b399355582e6
   React-NativeModulesApple: a03b2da2b8e127d5f5ee29c683e0deba7a9e1575
   React-perflogger: 68ec84e2f858a3e35009aef8866b55893e5e0a1f
