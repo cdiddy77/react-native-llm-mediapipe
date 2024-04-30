@@ -68,6 +68,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 12,
   },
+  samplePromptButton: { marginLeft: 12, paddingHorizontal: 16 },
+  samplePromptButtonText: {
+    ...typogs.button,
+    color: colors.white,
+  },
   sendButton: { marginLeft: 12 },
   sendButtonText: {
     ...typogs.button,
