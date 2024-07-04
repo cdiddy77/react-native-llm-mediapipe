@@ -91,3 +91,6 @@ ungitable/
 # download/convert model files
 models/download/
 models/converted/
+
+# environment variables
+.env

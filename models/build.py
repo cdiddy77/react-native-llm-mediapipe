@@ -3,20 +3,35 @@ import os
 import sys
 import mediapipe as mp
 from mediapipe.tasks.python.genai import converter
+import dotenv
+
+dotenv.load_dotenv()
 
 
-def download_files(url_path_pairs, chunk_size=1024 * 1024):  # Default chunk size: 1 MB
+def download_files(
+    url_path_pairs, chunk_size=1024 * 1024, force=False
+):  # Default chunk size: 1 MB
     for url, path in url_path_pairs:
         # Ensure the directory exists
         os.makedirs(os.path.dirname(path), exist_ok=True)
 
+        if not force and os.path.exists(path):
+            print(f"File '{path}' already exists. Skipping download.")
+            continue
+
+        headers = (
+            {"Authorization": f"Bearer {os.getenv('HF_API_TOKEN')}"}
+            if os.getenv("HF_API_TOKEN")
+            else {}
+        )
+
         try:
             # Stream the download to handle large files
-            with requests.get(url, stream=True) as response:
+            with requests.get(url, stream=True, headers=headers) as response:
                 response.raise_for_status()  # Raise an exception for HTTP errors
 
                 # Write the content of the response to a file in chunks
-                with open(path, 'wb') as file:
+                with open(path, "wb") as file:
                     for chunk in response.iter_content(chunk_size=chunk_size):
                         # filter out keep-alive new chunks
                         if chunk:
@@ -33,14 +48,14 @@ def convert_models(convert_jobs):
         # Convert the model
         print(f"Converting model: {job['title']}")
         config = converter.ConversionConfig(
-            input_ckpt=job['input_ckpt'],
-            ckpt_format=job['ckpt_format'],
-            model_type=job['model_type'],
-            backend=job['backend'],
-            output_dir=job['output_dir'],
+            input_ckpt=job["input_ckpt"],
+            ckpt_format=job["ckpt_format"],
+            model_type=job["model_type"],
+            backend=job["backend"],
+            output_dir=job["output_dir"],
             combine_file_only=False,
-            vocab_model_file=job['vocab_model_file'],
-            output_tflite_file=job['output_tflite_file'],
+            vocab_model_file=job["vocab_model_file"],
+            output_tflite_file=job["output_tflite_file"],
         )
 
         converter.convert_checkpoint(config)
@@ -66,7 +81,7 @@ url_path_pairs = [
         "download/gemma-2b-it/model-00001-of-00002.safetensors",
     ),
     (
-        "https://huggingface.co/google/gemma-2b-it/resolve/main/model-00002-of-00002.safetensors.safetensors?download=true",
+        "https://huggingface.co/google/gemma-2b-it/resolve/main/model-00002-of-00002.safetensors?download=true",
         "download/gemma-2b-it/model-00002-of-00002.safetensors.safetensors",
     ),
     (
@@ -132,12 +147,12 @@ convert_jobs = [
     create_convert_params(
         "falcon-rw-1b", "cpu", "FALCON_RW_1B", "pytorch_model.bin", "pytorch"
     ),
-    create_convert_params(
-        "gemma-2b-it", "gpu", "GEMMA_2B", "model-*.safetensors", "safetensors"
-    ),
-    create_convert_params(
-        "gemma-2b-it", "cpu", "GEMMA_2B", "model-*.safetensors", "safetensors"
-    ),
+    # create_convert_params(
+    #     "gemma-2b-it", "gpu", "GEMMA_2B", "model-*.safetensors", "safetensors"
+    # ),
+    # create_convert_params(
+    #     "gemma-2b-it", "cpu", "GEMMA_2B", "model-*.safetensors", "safetensors"
+    # ),
     create_convert_params(
         "stablelm-3b-4e1t",
         "gpu",
@@ -161,13 +176,24 @@ convert_jobs = [
 ]
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        # No command-line arguments were provided, run both functions
-        download_files(url_path_pairs)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Download and convert models.")
+    parser.add_argument("--download", action="store_true", help="Download files")
+    parser.add_argument("--convert", action="store_true", help="Convert models")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force download even if files already exist",
+    )
+
+    args = parser.parse_args()
+
+    if args.download:
+        download_files(url_path_pairs, force=args.force)
+    if args.convert:
         convert_models(convert_jobs)
-    else:
-        # Process command-line arguments
-        if "--download" in sys.argv:
-            download_files(url_path_pairs)
-        if "--convert" in sys.argv:
-            convert_models(convert_jobs)
+
+    if not args.download and not args.convert:
+        download_files(url_path_pairs, force=args.force)
+        convert_models(convert_jobs)

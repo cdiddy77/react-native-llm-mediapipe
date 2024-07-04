@@ -104,6 +104,22 @@ android {
     }
 }
 
+project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
+
+def sourceFile = file('../../../models/converted/gemma-2b-it-cpu-int4.bin')
+def destinationFile = file("${project.ext.ASSET_DIR}/gemma-2b-it-cpu-int4.bin")
+
+task copyModelFile(type: Copy) {
+    onlyIf { !destinationFile.exists() }
+    from sourceFile
+    into project.ext.ASSET_DIR
+    doFirst {
+        println "Copying ${sourceFile} to ${destinationFile}"
+    }
+}
+
+preBuild.dependsOn copyModelFile
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
