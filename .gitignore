@@ -83,6 +83,7 @@ example/android/app/src/main/assets/*.bin
 
 # python
 venv
+.venv
 
 # place to put non source-controlled files
 ungitable/
