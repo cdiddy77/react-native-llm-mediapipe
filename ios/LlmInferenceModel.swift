@@ -32,7 +32,7 @@ final class LlmInferenceModel {
     llmOptions.topk = self.topK
     llmOptions.temperature = self.temperature
     llmOptions.randomSeed = self.randomSeed
-    return LlmInference(options: llmOptions)
+    return try? LlmInference(options: llmOptions)
   }()
 
   var handle: Int
