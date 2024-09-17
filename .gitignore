@@ -85,6 +85,9 @@ example/android/app/src/main/assets/*.bin
 venv
 .venv
 
+# environment variables
+.env
+
 # place to put non source-controlled files
 ungitable/
 
