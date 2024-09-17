@@ -48,6 +48,8 @@ function App(): React.JSX.Element {
   const llmInference = useLlmInference({
     storageType: 'asset',
     modelName: 'gemma-2b-it-cpu-int4.bin',
+    // 'gemma-1.1-2b-it-gpu-int4.bin' or the name of the model that
+    // you placed at android/app/src/main/assets/{MODEL_FILE}
   });
 
   const onSendPrompt = React.useCallback(async () => {
