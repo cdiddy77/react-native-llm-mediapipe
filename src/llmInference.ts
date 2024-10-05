@@ -75,9 +75,11 @@ export function useLlmInference(config: LlmInferenceConfig) {
   const configStorageKey = getConfigStorageKey(config);
   React.useEffect(() => {
     // Skip model creation if configStorageKey is empty
-    if (!configStorageKey) {
-        console.warn('No valid model path or name provided. Skipping model creation.');
-        return;
+    if (configStorageKey.length === 0) {
+      console.warn(
+        'No valid model path or name provided. Skipping model creation.'
+      );
+      return;
     }
     let newHandle: number | undefined;
     const modelCreatePromise =

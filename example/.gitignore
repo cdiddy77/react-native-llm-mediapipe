@@ -1,2 +1,6 @@
 vendor/
 Pods/
+falcon-*.bin
+gemma-*.bin
+phi-*.bin
+stablelm-*.bin
